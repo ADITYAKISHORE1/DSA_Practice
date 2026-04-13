@@ -1,4 +1,4 @@
-name: Sync LeetCode
+name: Sync Full LeetCode Solutions
 
 on:
   workflow_dispatch:
@@ -18,25 +18,71 @@ jobs:
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
-      - name: Install leetcode-cli
+      - name: Install dependencies
         run: |
-          npm install -g leetcode-cli
+          npm install axios fs
 
-      - name: Login to LeetCode
+      - name: Fetch LeetCode submissions
         run: |
-          leetcode user -l https://leetcode.com \
-          -c "${{ secrets.LEETCODE_SESSION }}" \
-          -t "${{ secrets.CSRF_TOKEN }}"
+          node << 'EOF'
+          const fs = require('fs');
+          const axios = require('axios');
 
-      - name: Fetch submissions
-        run: |
-          mkdir -p solutions
-          leetcode list > solutions/list.txt
+          const session = process.env.LEETCODE_SESSION;
+          const csrf = process.env.CSRF_TOKEN;
+
+          const headers = {
+            Cookie: `LEETCODE_SESSION=${session}; csrftoken=${csrf}`,
+            'x-csrftoken': csrf,
+            'Content-Type': 'application/json'
+          };
+
+          async function fetchSubmissions() {
+            let res = await axios.post(
+              'https://leetcode.com/graphql',
+              {
+                query: `
+                query {
+                  submissionList(limit: 20) {
+                    submissions {
+                      title
+                      titleSlug
+                      lang
+                      code
+                    }
+                  }
+                }`
+              },
+              { headers }
+            );
+
+            return res.data.data.submissionList.submissions;
+          }
+
+          async function main() {
+            const subs = await fetchSubmissions();
+
+            if (!subs) return;
+
+            for (let s of subs) {
+              const folder = "solutions";
+              if (!fs.existsSync(folder)) fs.mkdirSync(folder);
+
+              const fileName = `${s.titleSlug}.${s.lang}`;
+              fs.writeFileSync(`${folder}/${fileName}`, s.code || "// empty");
+            }
+          }
+
+          main();
+          EOF
+        env:
+          LEETCODE_SESSION: ${{ secrets.LEETCODE_SESSION }}
+          CSRF_TOKEN: ${{ secrets.CSRF_TOKEN }}
 
       - name: Commit and push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "Sync LeetCode submissions" || echo "No changes"
+          git commit -m "Sync LeetCode solutions" || echo "No changes"
           git push
