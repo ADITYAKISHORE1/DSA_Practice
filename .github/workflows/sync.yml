@@ -2,19 +2,18 @@ name: Sync LeetCode
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * *"
 
 jobs:
   sync:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: LeetCode Sync
-        uses: ashishgpt/leetcode-sync-action@v1.0.1
+      - name: Sync LeetCode
+        uses: leetcode-tools/leetcode-sync@latest
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           leetcode-session: ${{ secrets.LEETCODE_SESSION }}
-          csrf-token: ${{ secrets.CSRF_TOKEN }}
+          leetcode-csrf-token: ${{ secrets.CSRF_TOKEN }}
+          destination-folder: my-leetcode-solutions
