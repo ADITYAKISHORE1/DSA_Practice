@@ -4,12 +4,10 @@ public:
         int jmp=0,near=0,far=0;
         while(far<nums.size()-1){
             int farthest=0;
-            int i=near;
-            while(i<=far){
-                farthest=max(farthest,i+nums[i]);
-                i++;
+            while(near<=far){
+                farthest=max(farthest,near+nums[near]);
+                near++;
             }
-            near=far+1;
             far=farthest;
             jmp++;
         }
