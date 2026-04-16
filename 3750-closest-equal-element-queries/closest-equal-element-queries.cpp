@@ -15,10 +15,9 @@ public:
                 continue;
             }
             int lb = lower_bound(ar.begin(), ar.end(), q) - ar.begin();
-            int ans = 1e9;
             int d1 = abs(ar[lb] - ar[(lb - 1 + m) % m]);
             int d2 = abs(ar[(lb + 1) % m] - ar[lb]);
-            ans = min({ans, d1, n - d1, d2, n - d2});
+            int ans = min({d1, n - d1, d2, n - d2});
             ax.push_back(ans);
         }
         return ax;
