@@ -25,7 +25,7 @@ public:
                 vis[idx + 1] = 1;
                 q.push({idx + 1, d + 1});
             }
-            for (auto i : mpp[arr[idx]]) {
+            for (auto& i : mpp[arr[idx]]) {
                 if (vis[i] == 0) {
                     vis[i] = 1;
                     q.push({i, d + 1});
