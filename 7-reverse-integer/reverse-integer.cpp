@@ -1,13 +1,12 @@
 class Solution {
 public:
     int reverse(int x) {
-        int p=(x<0);
-        long long y =llabs(x);
-        string s=to_string(y);
-        std::reverse(s.begin(),s.end());
-        y=stoll(s);
-        if(p) y=-y;
-        if(y < INT_MIN || y > INT_MAX) return 0;
-        return y;
+        long long ans=0;
+        while(x!=0){
+            ans=ans*10+x%10;
+            x/=10;
+            if(ans>INT_MAX or ans<INT_MIN) return 0;
+        }
+        return (int) ans;
     }
 };
