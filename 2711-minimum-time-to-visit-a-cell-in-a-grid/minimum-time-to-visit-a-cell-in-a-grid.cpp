@@ -9,9 +9,11 @@ public:
 
         vector<vector<int>> vis(m, vector<int>(n, 0));
 
-        priority_queue<tuple<int, int, int>, vector<tuple<int, int, int>>,
-                       greater<>>
-            pq;
+        priority_queue<
+            tuple<int,int,int>,
+            vector<tuple<int,int,int>>,
+            greater<>
+        > pq;
 
         pq.push({0, 0, 0});
 
@@ -22,8 +24,7 @@ public:
             auto [t, x, y] = pq.top();
             pq.pop();
 
-            if (vis[x][y])
-                continue;
+            if (vis[x][y]) continue;
             vis[x][y] = 1;
 
             if (x == m - 1 && y == n - 1)
@@ -39,11 +40,7 @@ public:
                 int nt = t + 1;
 
                 if (nt < grid[nx][ny]) {
-                    int dif = grid[nx][ny] - nt;
-                    if (dif & 1) {
-                        nt = grid[nx][ny] + 1;
-                    } else
-                        nt = grid[nx][ny];
+                    nt = grid[nx][ny] + (grid[nx][ny] - nt) % 2;
                 }
 
                 pq.push({nt, nx, ny});
