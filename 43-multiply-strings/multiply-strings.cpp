@@ -31,9 +31,7 @@ public:
             for (int k = 0; k < num1.size() - i - 1; k++)
                 s += "0";
             for (int j = num2.size() - 1; j >= 0; j--) {
-                int d1 = num1[i] - '0';
-                int d2 = num2[j] - '0';
-                int mul = d1 * d2 + carry;
+                int mul = (num1[i] - '0') * (num2[j] - '0') + carry;
                 s += ((mul % 10) + '0');
                 carry = mul / 10;
             }
