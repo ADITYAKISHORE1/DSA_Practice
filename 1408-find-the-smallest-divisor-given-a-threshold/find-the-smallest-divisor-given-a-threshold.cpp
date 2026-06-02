@@ -1,10 +1,9 @@
 class Solution {
     bool pred(int div,vector<int>&v,int thr){
-        int sum=0;
         for(auto& i:v){
-            sum+=(i+div-1)/div;
+            thr-=(i+div-1)/div;
         }
-        return sum<=thr;
+        return thr>=0;
     }
 public:
     int smallestDivisor(vector<int>& nums, int threshold) {
