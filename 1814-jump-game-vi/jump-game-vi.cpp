@@ -6,7 +6,9 @@ public:
         vector<int> idx(n);
         for(int i=n-1;i>=0;i--){
             if(st.size()>k){
-                auto lb=st.lower_bound(idx[i+k+1]);
+            //For associative containers (set, multiset, map, multimap), almost always prefer the container's member functions
+                auto lb=st.lower_bound(idx[i+k+1]); // use member lower_bound function
+                                                    // bcz general lower_bound here cost O(n)
                 st.erase(lb);
             }
             int mx=0;
