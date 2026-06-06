@@ -1,55 +1,48 @@
 class Solution {
-    void addA(string& s, int& a) {
+    void add(string& s, char c, int& a) {
         a--;
-        s += 'a';
-    }
-    void addB(string& s, int& b) {
-        b--;
-        s += 'b';
-    }
-    void addC(string& s, int& c) {
-        c--;
-        s += 'c';
+        s += c;
     }
 
 public:
     string longestDiverseString(int a, int b, int c) {
         string s;
         while (a > 0 or b > 0 or c > 0) {
-            int maxm = max({a, b, c});
-            if (s.size() >= 2 and s[s.size() - 1] == s[s.size() - 2]) {
-                if (s[s.size() - 1] == 'a') {
+            int n = s.size();
+            if (n >= 2 and s[n - 1] == s[n - 2]) {
+                if (s[n - 1] == 'a') {
                     if (b == 0 and c == 0)
                         break;
                     else if (b >= c) {
-                        addB(s, b);
-                    } else if (c > b) {
-                        addC(s, c);
+                        add(s, 'b', b);
+                    } else {
+                        add(s, 'c', c);
                     }
-                } else if (s[s.size() - 1] == 'b') {
+                } else if (s[n - 1] == 'b') {
                     if (a == 0 and c == 0)
                         break;
                     else if (a >= c) {
-                        addA(s, a);
-                    } else if (c > a) {
-                        addC(s, c);
+                        add(s, 'a', a);
+                    } else {
+                        add(s, 'c', c);
                     }
-                } else if (s[s.size() - 1] == 'c') {
+                } else if (s[n - 1] == 'c') {
                     if (a == 0 and b == 0)
                         break;
-                    if (b >= a) {
-                        addB(s, b);
-                    } else if (a > b) {
-                        addA(s, a);
+                    else if (b >= a) {
+                        add(s, 'b', b);
+                    } else {
+                        add(s, 'a', a);
                     }
                 }
             } else {
+                int maxm = max({a, b, c});
                 if (maxm == a)
-                    addA(s, a);
+                    add(s, 'a', a);
                 else if (maxm == b)
-                    addB(s, b);
+                    add(s, 'b', b);
                 else
-                    addC(s, c);
+                    add(s, 'c', c);
             }
         }
         return s;
