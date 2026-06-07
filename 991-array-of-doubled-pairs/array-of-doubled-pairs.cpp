@@ -1,10 +1,11 @@
 class Solution {
 public:
     bool canReorderDoubled(vector<int>& arr) {
-        multiset<int> st;
+        multiset<int> st,st2;
         for (auto i : arr) {
             if (i >= 0)
                 st.insert(i);
+            else st2.insert(i);
         }
         while (!st.empty()) {
             int a = *st.begin();
@@ -17,20 +18,15 @@ public:
             st.erase(lb);
         }
 
-        for (auto i : arr) {
-            if (i < 0)
-                st.insert(i);
-        }
-
-        while (!st.empty()) {
-            int a = *prev(st.end());
-            st.erase(prev(st.end()));
-            auto lb = st.lower_bound(2 * a);
+        while (!st2.empty()) {
+            int a = *prev(st2.end());
+            st2.erase(prev(st2.end()));
+            auto lb = st2.lower_bound(2 * a);
             // cout << *lb << " " << 2 * a << endl;
-            if(st.empty()) return false;
+            if(st2.empty()) return false;
             if (*lb != 2 * a)
                 return false;
-            st.erase(lb);
+            st2.erase(lb);
         }
         return true;
     }
