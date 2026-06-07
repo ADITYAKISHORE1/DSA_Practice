@@ -1,29 +1,37 @@
 class Solution {
-    vector<string> f(int prev, int n, int k) {
-        if (k < 0)
-            return {};
-        if (n == 0) {
-            if (prev)
-                return {"0"};
-            else
-                return {"1", "0"};
-        }
-        vector<string> st = f(0, n - 1, k);
+    vector<string> ans;
+    string s;
 
-        for (auto& s : st) {
-            s = s + "0";
-        }
-        if (!prev) {
-            vector<string> st1 = f(1, n - 1, k - n);
-            for (auto& s : st1) {
-                st.push_back(s+"1");
+    void f(int prev, int n, int k) {
+        if (k < 0)
+            return;
+        if (n == 0) {
+            s.push_back('0');
+            ans.push_back(s);
+            s.pop_back();
+            if (!prev) {
+                s.push_back('1');
+                ans.push_back(s);
+                s.pop_back();
             }
+            return;
         }
-        return st;
+        s.push_back('0');
+        f(0, n - 1, k);
+        s.pop_back();
+
+        if (!prev) {
+            s.push_back('1');
+            f(1, n - 1, k - n);
+            s.pop_back();
+        }
     }
 
 public:
     vector<string> generateValidStrings(int n, int k) {
-        return f(0, n - 1, k);
+        s.reserve(n);
+        f(0, n - 1, k);
+        for(auto & s:ans) reverse(s.begin(),s.end());
+        return ans;
     }
 };
