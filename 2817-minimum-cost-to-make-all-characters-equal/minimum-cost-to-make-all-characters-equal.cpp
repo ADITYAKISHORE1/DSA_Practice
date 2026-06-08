@@ -4,7 +4,7 @@ public:
         int n = s.size();
         if (n == 1)
             return 0;
-        vector<long long> pref(n), suf(n);
+        vector<long long> pref(n);
         long long ans = LLONG_MAX;
         pref[0] = 0;
         for (int i = 1; i < n; i++) {
@@ -13,13 +13,12 @@ public:
                 pref[i] += i;
             }
         }
-        suf[n - 1] = 0;
+        long long suf=0;
         for (int i = n - 2; i >= 0; i--) {
-            suf[i] = suf[i + 1];
             if (s[i] != s[i + 1]) {
-                suf[i] += n - i - 1;
+                suf += n - i - 1;
             }
-            ans = min(ans, suf[i] + pref[i]);
+            ans = min(ans, suf + pref[i]);
         }
         return ans;
     }
