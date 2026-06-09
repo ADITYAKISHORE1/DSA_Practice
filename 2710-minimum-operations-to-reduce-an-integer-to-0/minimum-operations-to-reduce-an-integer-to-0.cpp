@@ -1,24 +1,18 @@
 class Solution {
     unordered_map<long long, int> dp;
-    int f(long long n, int k) {
-        if (k > 31)
-            return 0;
+    int f(long long n) {
+        if ((n & (n - 1)) == 0)
+            return 1;
         if (n == 0) {
             return 0;
         }
-        long long key = (n << 6) | k;
-        if (dp.find(key) != dp.end()) {
-            return dp[key];
+        if (dp.find(n) != dp.end()) {
+            return dp[n];
         }
-        if ((n >> k) & 1LL) {
-            return dp[key] = 1 + min(f((n + (1LL << k)), k + 1),
-                                     f((n & ~(1LL << k)), k + 1));
-        }
-        return dp[key] = f(n, k + 1);
+        long long lowbit = n & -n;
+        return dp[n] = 1 + min(f(n + lowbit), f(n - lowbit));
     }
 
 public:
-    int minOperations(int n) { 
-        return f(n, 0); 
-    }
+    int minOperations(int n) { return f(n); }
 };
