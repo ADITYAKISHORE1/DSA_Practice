@@ -1,18 +1,23 @@
 class Solution {
-    unordered_map<long long, int> dp;
-    int f(long long n) {
-        if ((n & (n - 1)) == 0)
-            return 1;
-        if (n == 0) {
-            return 0;
-        }
-        if (dp.find(n) != dp.end()) {
-            return dp[n];
-        }
-        long long lowbit = n & -n;
-        return dp[n] = 1 + min(f(n + lowbit), f(n - lowbit));
-    }
-
 public:
-    int minOperations(int n) { return f(n); }
+    int minOperations(int n) {
+        int ans = 0;
+        while (n) {
+            if ((n & 1) == 0) {
+                n >>= 1;
+            } else {
+                if (n == 1) {
+                    ans++;
+                    break;
+                } else {
+                    if ((n & 3) == 3)
+                        n++;
+                    else
+                        n--;
+                    ans++;
+                }
+            }
+        }
+        return ans;
+    }
 };
