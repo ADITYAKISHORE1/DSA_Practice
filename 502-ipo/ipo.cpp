@@ -7,20 +7,19 @@ public:
         for (int i = 0; i < profits.size(); i++) {
             capital_minimize.push({capital[i], profits[i]});
         }
-        priority_queue<pair<int, int>> profit_maximize;
+        priority_queue<int> profit_maximize;
         while (k > 0) {
             while (!capital_minimize.empty() and
                    w >= capital_minimize.top().first) {
                 auto [ct, pt] = capital_minimize.top();
                 capital_minimize.pop();
-                profit_maximize.push({pt, ct});
+                profit_maximize.push(pt);
             }
             if (profit_maximize.empty())
                 break;
             else {
-                auto [pr, cp] = profit_maximize.top();
+                w += profit_maximize.top();
                 profit_maximize.pop();
-                w += pr;
                 k--;
                 if (k == 0)
                     return w;
