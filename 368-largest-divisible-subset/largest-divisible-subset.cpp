@@ -19,8 +19,6 @@ public:
         sort(nums.begin(), nums.end());
         int n = nums.size();
         dp.resize(n + 1, vector<int>(n + 1, -1));
-
-        int len = f(1, 0, nums);
         vector<int> ans;
         // cout<<len;
         int i = 1, prev = 0;
@@ -28,10 +26,10 @@ public:
             int take = INT_MIN;
 
             if (nums[i] % nums[prev] == 0) {
-                take = 1 + dp[i + 1][i];
+                take = 1 + f(i+1,i,nums);
             }
 
-            int notTake = dp[i + 1][prev];
+            int notTake = f(i+1,prev,nums);
 
             if (take >= notTake) {
                 ans.push_back(nums[i]);
