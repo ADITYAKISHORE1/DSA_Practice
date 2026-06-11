@@ -1,16 +1,17 @@
 class Solution {
     const int MOD = 1e9 + 7;
-    long long expo(long long a,long long b){
-        long long res=1;
-        while(b){
-            if(b&1){
-                res=res*a%MOD;
+    long long expo(long long a, long long b) {
+        long long res = 1;
+        while (b) {
+            if (b & 1) {
+                res = res * a % MOD;
             }
-            a=a*a%MOD;
-            b>>=1;
+            a = a * a % MOD;
+            b >>= 1;
         }
         return res;
     }
+
 public:
     int assignEdgeWeights(vector<vector<int>>& edges) {
         int n = 0;
@@ -21,9 +22,8 @@ public:
             adj[i[0]].push_back(i[1]);
             adj[i[1]].push_back(i[0]);
         }
-        // cout<<n<<endl;
         queue<int> q;
-        vector<long long> dist(n + 1, -1);
+        vector<long long> dist(n + 1, INT_MAX);
         q.push(1);
         dist[1] = 0;
         long long maxmDist = 0;
@@ -32,14 +32,13 @@ public:
             q.pop();
             maxmDist = max(maxmDist, dist[node]);
             for (auto& adjNode : adj[node]) {
-                if (dist[adjNode] ==-1) {
+                if (dist[adjNode] > dist[node]+1) {
                     dist[adjNode] = dist[node] + 1;
                     q.push(adjNode);
                 }
             }
         }
-        cout << maxmDist;
         long long ans = expo(2, maxmDist - 1);
-        return ans%MOD;
+        return ans % MOD;
     }
 };
