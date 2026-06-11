@@ -14,15 +14,21 @@ class Solution {
     // }
 public:
     int kInversePairs(int n, int k) {
-        vector<vector<long long>> dp(n+1,vector<long long>(k+1,0));
-        for(int i=1;i<=n;i++) dp[i][0]=1;
+        // vector<vector<long long>> dp(n+1,vector<long long>(k+1,0));
+        vector<long long> cur(k+1,0),prev(k+1,0);
+        // for(int i=1;i<=n;i++) dp[i][0]=1;
+        prev[0]=1;
         for(int i=1;i<=n;i++){
+            fill(cur.begin(),cur.end(),0);
+            cur[0]=1;
             for(int j=1;j<=k;j++){
                 for(int l=0;l<=min(j,i-1);l++){
-                    dp[i][j]=(dp[i][j]+dp[i-1][j-l])%MOD;
+                    cur[j]=(cur[j]+prev[j-l])%MOD;
                 }
             }
+            prev=cur;
         }
-        return dp[n][k]%MOD;
+        // return dp[n][k]%MOD;
+        return prev[k];
     }
 };
