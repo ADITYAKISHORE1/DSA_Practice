@@ -1,25 +1,49 @@
 class Solution {
     const int MOD = 1e9 + 7;
-    vector<vector<int>> dp;
-    int f(int n, int i, int x) {
-        if (n == 0)
-            return 1;
-        if (dp[n][i] != -1)
-            return dp[n][i];
-        long long take = 0;
-        for (int p = i; p <= n; p++) {
-            int v = pow(p, x);
-            if (n >= v ) {
-                take = (take + f(n - v, p + 1, x)) % MOD;
-            } else
-                break;
+    long long powr(long long base, int exp, int limit) {
+        long long ans = 1;
+
+        while (exp > 0) {
+            if (exp & 1) {
+                ans *= base;
+                if (ans > limit)
+                    return limit + 1;
+            }
+
+            exp >>= 1;
+
+            if (exp) {
+                base *= base;
+                if (base > limit)
+                    base = limit + 1;
+            }
         }
-        return dp[n][i] = take % MOD;
+
+        return ans;
     }
 
 public:
     int numberOfWays(int n, int x) {
-        dp.resize(n + 1, vector<int>(n + 1, -1));
-        return f(n, 1, x)%MOD;
+        vector<vector<int>> dp(n + 1, vector<int>(n + 2, 0));
+        for (int i = 0; i <= n + 1; i++) {
+            dp[0][i] = 1;
+        }
+        for (int i = 1; i <= n; i++) {
+            for (int j = n; j >= 1; j--) {
+                long long ways = 0;
+
+                for (int k = j; k <= n; k++) {
+                    long long v = powr(k, x, i);
+
+                    if (v > i)
+                        break;
+
+                    ways = (ways + dp[i - v][k + 1]) % MOD;
+                }
+
+                dp[i][j] = ways;
+            }
+        }
+        return dp[n][1] % MOD;
     }
 };
