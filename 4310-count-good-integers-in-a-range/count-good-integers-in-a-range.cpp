@@ -1,5 +1,11 @@
 class Solution {
     long long dp[20][2][2][10];
+    /* dp states
+        i -> digit
+        tight -> check the upper limit
+        started -> to don't count leading zeros
+        digit -> prev digit used to satisfy the difference condition
+    */
     long long f(int i, bool tight, bool started, int digit, vector<int>& v,
                 int k) {
         if (i == v.size())
