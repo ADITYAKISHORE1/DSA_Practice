@@ -7,21 +7,24 @@ public:
             adj[i[0] - 1].push_back(i[1] - 1);
             indegree[i[1] - 1]++;
         }
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+        queue<int> q;
         for (int i = 0; i < n; i++) {
             if (indegree[i] == 0) {
-                pq.push({time[i], i});
+                q.push( i);
             }
         }
+        vector<int> incMax(n,0);
         int totalTime = 0;
-        while (!pq.empty()) {
-            auto [tm, node] = pq.top();
-            pq.pop();
+        while (!q.empty()) {
+            auto node = q.front();
+            q.pop();
+            int tm=incMax[node]+time[node];
             totalTime = max(totalTime, tm);
             for (auto& adjNode : adj[node]) {
                 indegree[adjNode]--;
+                incMax[adjNode]=max(incMax[adjNode],tm);
                 if (indegree[adjNode] == 0) {
-                    pq.push({time[adjNode] + tm, adjNode});
+                    q.push(adjNode);
                 }
             }
         }
