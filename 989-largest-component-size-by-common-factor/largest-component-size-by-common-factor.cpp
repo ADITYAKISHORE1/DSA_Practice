@@ -1,52 +1,57 @@
+class DSU {
+    vector<int> par;
+    vector<int> size;
+
+public:
+    DSU(int n) {
+        par.resize(n);
+        size.resize(n, 1);
+        for (int i = 0; i < n; i++)
+            par[i] = i;
+    }
+
+    int find(int v) {
+        if (par[v] == v)
+            return v;
+        return par[v] = find(par[v]);
+    }
+
+    void unite(int u, int v) {
+        int par_u = find(u);
+        int par_v = find(v);
+
+        if (par_u == par_v)
+            return;
+        else if (size[par_u] < size[par_v]) {
+            size[par_v] += size[par_u];
+            par[par_u] = par_v;
+        } else {
+            size[par_u] += size[par_v];
+            par[par_v] = par_u;
+        }
+    }
+};
 class Solution {
-    vector<int> sieve(int x){
-        vector<int> ans;
-        for(int i=2;i*i<=x;i++){
-            if(x%i==0){
-                ans.push_back(i);
-                while(x%i==0){
-                    x/=i;
-                }
-            }
-        }
-        if(x>1) ans.push_back(x);
-        return ans;
-    }
-    vector<bool> isAval;
-    vector<int> vis;
-    vector<vector<int>> adj;
-    int dfs(int node){
-        vis[node]=1;
-        int cnt=isAval[node];
-        for(auto& adjNode:adj[node]){
-            if(vis[adjNode]==0){
-                cnt+=dfs(adjNode);
-            }
-        }
-        return cnt;
-    }
 public:
     int largestComponentSize(vector<int>& nums) {
-        isAval.resize(1e5+1,0);
-        for(auto& i:nums){
-            isAval[i]=1;
-        }
-        adj.resize(1e5+1);
-        vis.resize(1e5+1,0);
-        vector<int> fac;
-        for(auto&i:nums){
-            fac=sieve(i);
-            for(auto& j:fac){
-                if(i==j) continue;
-                adj[i].push_back(j);
-                adj[j].push_back(i);
+        int m = *max_element(nums.begin(), nums.end()) + 1;
+        DSU* d = new DSU(m);
+        for (auto& i : nums) {
+            int n = i;
+            for (int j = 2; j * j <= n; j++) {
+                if (n % j == 0) {
+                    d->unite(i, j);
+                    while (n % j == 0)
+                        n /= j;
+                }
             }
+            if (n > 1)
+                d->unite(i, n);
         }
-        int maxCnt=0;
-        for(int i=2;i<adj.size();i++){
-            if(vis[i]==0){
-                maxCnt=max(maxCnt,dfs(i));
-            }
+        int maxCnt = 0;
+        unordered_map<int, int> mpp;
+        for (auto& i : nums) {
+            maxCnt = max(maxCnt, ++mpp[d->find(i)]);
         }
         return maxCnt;
     }
