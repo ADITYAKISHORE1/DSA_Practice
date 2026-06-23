@@ -33,19 +33,26 @@ public:
 };
 
 class Solution {
+    DSU* d;
+    void chkPar(vector<int>& par_hash, int& par, int& sz) {
+        for (int i = 0; i < par_hash.size(); i++) {
+            if (par_hash[i] == par) {
+                return;
+            }
+        }
+        par_hash.push_back(par);
+        sz += d->getSize(par);
+    }
+
 public:
     int largestIsland(vector<vector<int>>& grid) {
         int n = grid.size();
-        DSU* d = new DSU(n * n);
+        d = new DSU(n * n);
         int maxSize = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (grid[i][j] == 1) {
                     int v = n * i + j;
-                    if (i > 0 and grid[i - 1][j] == 1)
-                        d->unite(v, v - n);
-                    if (j > 0 and grid[i][j - 1] == 1)
-                        d->unite(v, v - 1);
                     if (i < n - 1 and grid[i + 1][j] == 1)
                         d->unite(v, v + n);
                     if (j < n - 1 and grid[i][j + 1] == 1)
@@ -58,36 +65,24 @@ public:
             for (int j = 0; j < n; j++) {
                 if (grid[i][j] == 0) {
                     int v = n * i + j;
-                    unordered_set<int> st;
+                    vector<int> par_hash;
                     int sz = 1;
                     int par;
                     if (i > 0 and grid[i - 1][j] == 1) {
                         par = d->find(v - n);
-                        if (!st.count(par)) {
-                            st.insert(par);
-                            sz += d->getSize(v - n);
-                        }
+                        chkPar(par_hash, par, sz);
                     }
                     if (j > 0 and grid[i][j - 1] == 1) {
                         par = d->find(v - 1);
-                        if (!st.count(par)) {
-                            st.insert(par);
-                            sz += d->getSize(v - 1);
-                        }
+                        chkPar(par_hash, par, sz);
                     }
                     if (i < n - 1 and grid[i + 1][j] == 1) {
                         par = d->find(v + n);
-                        if (!st.count(par)) {
-                            st.insert(par);
-                            sz += d->getSize(v + n);
-                        }
+                        chkPar(par_hash, par, sz);
                     }
                     if (j < n - 1 and grid[i][j + 1] == 1) {
                         par = d->find(v + 1);
-                        if (!st.count(par)) {
-                            st.insert(par);
-                            sz += d->getSize(v + 1);
-                        }
+                        chkPar(par_hash, par, sz);
                     }
                     maxSize = max(maxSize, sz);
                 }
