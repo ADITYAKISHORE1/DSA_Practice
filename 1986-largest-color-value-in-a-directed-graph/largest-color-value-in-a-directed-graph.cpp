@@ -1,44 +1,42 @@
 class Solution {
-    vector<int> vis;
-    vector<vector<int>> dp;
-    vector<vector<int>> adj;
-    int n;
-    int dfs(int node, int col, string& colors) {
-        if (vis[node] == 1) {
-            return -1;
-        }
-        if (dp[node][col] != -1)
-            return dp[node][col];
-        vis[node] = 1;
-        int take = 0;
-        for (auto& adjNode : adj[node]) {
-            int child = dfs(adjNode, col, colors);
-            if(child==-1) return -1;
-            take = max(take, child);
-        }
-        vis[node] = 2;
-        take += (colors[node]-'a'==col);
-        return dp[node][col] = take;
-    }
-
 public:
     int largestPathValue(string colors, vector<vector<int>>& edges) {
-        n = colors.size();
-        dp.resize(n, vector<int>(26, -1));
-        adj.resize(n);
+        int n = colors.size();
+        vector<int> indegree(n, 0);
+        vector<vector<int>> adj(n);
         for (auto& i : edges) {
+            indegree[i[1]]++;
             adj[i[0]].push_back(i[1]);
         }
-        int ans = 0;
-        for (int c = 0; c < 26; c++) {
-            vis.resize(n, 0);
-            for (int i = 0; i < n; i++) {
-                int t = dfs(i, c, colors);
-                if (t == -1)
-                    return -1;
-                ans = max(ans, t);
+        vector<vector<int>> dp(n, vector<int>(26, 0));
+        queue<int> q;
+        for (int i = 0; i < n; i++) {
+            if (indegree[i] == 0) {
+                q.push(i);
+                dp[i][colors[i] - 'a'] = 1;
             }
         }
-        return ans;
+        int ans = 0;
+        int processedNode = 0;
+        while (!q.empty()) {
+            int node = q.front();
+            q.pop();
+            processedNode++;
+            for (int i = 0; i < 26; i++) {
+                ans = max(ans, dp[node][i]);
+            }
+            for (auto& adjNode : adj[node]) {
+                for (int col = 0; col < 26; col++) {
+                    dp[adjNode][col] =
+                        max(dp[node][col] + (col == colors[adjNode] - 'a'),
+                            dp[adjNode][col]);
+                }
+                indegree[adjNode]--;
+                if (indegree[adjNode] == 0) {
+                    q.push(adjNode);
+                }
+            }
+        }
+        return (processedNode == n) ? ans : -1;
     }
 };
