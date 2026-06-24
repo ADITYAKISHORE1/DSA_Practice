@@ -2,26 +2,23 @@ class Solution {
     vector<int> vis;
     vector<vector<int>> dp;
     vector<vector<int>> adj;
-    bool isLoop = false;
     int n;
-    vector<int> dfs(int node, string& colors) {
-        if (vis[node] == 1 or isLoop) {
-            isLoop = true;
-            return vector<int>(26, 0);
+    int dfs(int node, int col, string& colors) {
+        if (vis[node] == 1) {
+            return -1;
         }
-        if (vis[node] == 2)
-            return dp[node];
+        if (dp[node][col] != -1)
+            return dp[node][col];
         vis[node] = 1;
-        vector<int> v(26, 0);
+        int take = 0;
         for (auto& adjNode : adj[node]) {
-            vector<int> child = dfs(adjNode, colors);
-            for (int i = 0; i < 26; i++)
-                v[i] = max(v[i], child[i]); // bcz we want to take the path
-                                            // which have maxm colors component
+            int child = dfs(adjNode, col, colors);
+            if(child==-1) return -1;
+            take = max(take, child);
         }
-        v[colors[node] - 'a'] += 1;
         vis[node] = 2;
-        return dp[node] = v;
+        take += (colors[node]-'a'==col);
+        return dp[node][col] = take;
     }
 
 public:
@@ -33,13 +30,14 @@ public:
             adj[i[0]].push_back(i[1]);
         }
         int ans = 0;
-        for (int i = 0; i < n; i++) {
+        for (int c = 0; c < 26; c++) {
             vis.resize(n, 0);
-            vector<int> t = dfs(i, colors);
-            if (isLoop)
-                return -1;
-            for (auto& i : t)
-                ans = max(ans, i);
+            for (int i = 0; i < n; i++) {
+                int t = dfs(i, c, colors);
+                if (t == -1)
+                    return -1;
+                ans = max(ans, t);
+            }
         }
         return ans;
     }
