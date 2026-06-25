@@ -1,36 +1,45 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left),
+ * right(right) {}
+ * };
+ */
 class Solution {
-        unordered_map<int,vector<int>> adj;
-    void dfs(TreeNode* root){
-        if(root->left!=nullptr){
-            adj[root->val].push_back(root->left->val);
-            adj[root->left->val].push_back(root->val);
-            dfs(root->left);
+    int maxm = 0;
+    int dfs(TreeNode* root){
+        if(root==nullptr) return 0;
+        int l=dfs(root->left);
+        int r=dfs(root->right);
+        return max(l,r)+1;
+    }
+    pair<bool, int> dfs(TreeNode* root, int start) {
+        if (root == nullptr)
+            return {false, 0};
+        if (root->val == start) {
+            maxm=max(maxm,dfs(root));
+            return {true, 1};
         }
-        if(root->right!=nullptr){
-            adj[root->val].push_back(root->right->val);
-            adj[root->right->val].push_back(root->val);
-            dfs(root->right);
+        pair<bool, int> l = dfs(root->left, start);
+        pair<bool, int> r = dfs(root->right, start);
+        if (l.first or r.first) {
+            maxm = max(maxm, l.second + r.second + 1);
         }
+        if (l.first)
+            return make_pair(true, l.second + 1);
+        else if (r.first)
+            return make_pair(true, r.second + 1);
+        return make_pair(false, max(l.second, r.second) + 1);
     }
 public:
     int amountOfTime(TreeNode* root, int start) {
-        if(root!=nullptr) dfs(root);
-        queue<pair<int,int>> q;
-        q.push({start,0});
-        unordered_map<int,int> vis;
-        vis[start]=1;
-        int ans=0;
-        while(!q.empty()){
-            auto [v,c]=q.front();
-            q.pop();
-            ans=max(ans,c);
-            for(auto& adjNode:adj[v]){
-                if(vis[adjNode]==0){
-                    vis[adjNode]=1;
-                    q.push({adjNode,c+1});
-                }
-            }
-        }
-        return ans;
+        pair<bool, int> p = dfs(root, start);
+        maxm = max(maxm, p.second);
+        return maxm - 1;
     }
 };
