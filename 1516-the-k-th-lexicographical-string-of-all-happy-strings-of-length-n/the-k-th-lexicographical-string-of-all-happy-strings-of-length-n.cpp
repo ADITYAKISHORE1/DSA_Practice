@@ -1,24 +1,25 @@
 class Solution {
-    vector<string> list;
-    void f(int n,char c,string s){
-        if(n<0){
-            list.push_back(s);
+    string ans;
+    int cnt = 0;
+    void f(int n, int k, char c, string s) {
+        if (n < 0) {
+            cnt++;
+            if (cnt == k)
+                ans = s;
             return;
         }
-        if(c!='a'){
-            f(n-1,'a',s+"a");
-        }
-        if(c!='b'){
-            f(n-1,'b',s+"b");
-        }
-        if(c!='c'){
-            f(n-1,'c',s+"c");
+        for (int i = 0; i < 3; i++) {
+            char ch = i + 'a';
+            if (c != ch) {
+                f(n - 1, k, ch, s + ch);
+            }
         }
     }
+
 public:
     string getHappyString(int n, int k) {
-        f(n-1,0,"");
-        if(list.size()<k) return "";
-        return list[k-1];
+        ans = "";
+        f(n - 1, k, 0, "");
+        return ans;
     }
 };
