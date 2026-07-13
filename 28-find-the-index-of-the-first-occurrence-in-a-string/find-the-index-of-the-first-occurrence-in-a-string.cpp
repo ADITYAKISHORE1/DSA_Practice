@@ -1,7 +1,8 @@
 class Solution {
-    vector<int> computeZ(string s){
+    vector<int> z;
+    void computeZ(string s){
         int n=s.size();
-        vector<int> z(n,0);
+        z.resize(n,0);
         int l=0,r=0;
         for(int i=1;i<n;i++){
             if(i>r){
@@ -26,12 +27,12 @@ class Solution {
                 }
             }
         }
-        return z;
     }
 public:
     int strStr(string haystack, string needle) {
         int n=needle.size();
-        vector<int> z=computeZ(needle+"$"+haystack);
+        haystack=needle+"$"+haystack;
+        computeZ(haystack);
         for(int i=0;i<z.size();i++){
             if(z[i]==n){
                 return i-n-1;
