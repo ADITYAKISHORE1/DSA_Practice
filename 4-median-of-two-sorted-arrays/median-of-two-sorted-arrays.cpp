@@ -1,19 +1,47 @@
 class Solution {
 public:
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        int m=nums1.size(),n=nums2.size();
-        priority_queue<int,vector<int>,greater<>> pq;
-        for(auto& i:nums1) pq.push(i);
-        for(auto& i:nums2) pq.push(i);
-        double median;
-        double a;
-        while(pq.size()>(n+m+1)/2){
-            a=pq.top();
-            pq.pop();
+        int m = nums1.size(), n = nums2.size();
+        int size = m + n;
+        int i = 0, j = 0, k = 0;
+        int ele1 = -1, ele2 = -1;
+        while (i < m and j < n) {
+            if (nums1[i] < nums2[j]) {
+                if (k == size / 2 - 1) {
+                    ele1 = nums1[i];
+                } else if (k == size / 2) {
+                    ele2 = nums1[i];
+                }
+                i++;
+            } else {
+                if (k == size / 2 - 1) {
+                    ele1 = nums2[j];
+                } else if (k == size / 2) {
+                    ele2 = nums2[j];
+                }
+                j++;
+            }
+            k++;
         }
-        if((m+n)%2==1){
-            return (double)pq.top();
+        while (i < m) {
+            if (k == size / 2 - 1) {
+                ele1 = nums1[i];
+            } else if (k == size / 2) {
+                ele2 = nums1[i];
+            }
+            i++;
+            k++;
         }
-        return (a+pq.top())/2.0;
+        while (j < n) {
+            if (k == size / 2 - 1) {
+                ele1 = nums2[j];
+            } else if (k == size / 2) {
+                ele2 = nums2[j];
+            }
+            j++;
+            k++;
+        }
+        if(size%2==0) return (double)(ele1+ele2)/2.0;
+        return ele2;
     }
 };
