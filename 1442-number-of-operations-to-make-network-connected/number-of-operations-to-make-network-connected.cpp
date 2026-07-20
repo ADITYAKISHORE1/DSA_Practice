@@ -43,7 +43,6 @@ public:
             int par = d->find(i);
             st.insert(par);
         }
-        cout<<extraEdge<<" "<<st.size()<<endl;
         if (st.size()-1 > extraEdge)
             return -1;
         return st.size()-1;
