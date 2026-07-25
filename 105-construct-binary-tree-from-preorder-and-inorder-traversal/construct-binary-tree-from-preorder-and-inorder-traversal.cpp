@@ -10,14 +10,10 @@
  * };
  */
 class Solution {
+    unordered_map<int,int> mpp;
     TreeNode* f(int & idx,int start,int end,vector<int>&preorder,vector<int>& inorder){
         if(start>end) return nullptr;
-        int i=start;
-        for(;i<=end;i++){
-            if(preorder[idx]==inorder[i]){
-                break;
-            }
-        }
+        int i=mpp[preorder[idx]];
         TreeNode* root=new TreeNode(preorder[idx]);
         idx++;
         root->left=f(idx,start,i-1,preorder,inorder);
@@ -27,6 +23,7 @@ class Solution {
 public:
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
         int n=preorder.size();
+        for(int i=0;i<n;i++) mpp[inorder[i]]=i;
         int idx=0;
         return f(idx,0,n-1,preorder,inorder);
     }
