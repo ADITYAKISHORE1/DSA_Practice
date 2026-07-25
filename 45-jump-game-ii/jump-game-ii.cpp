@@ -1,16 +1,16 @@
 class Solution {
 public:
     int jump(vector<int>& nums) {
-        int jmp=0,near=0,far=0;
-        while(far<nums.size()-1){
-            int farthest=0;
-            while(near<=far){
-                farthest=max(farthest,near+nums[near]);
-                near++;
+        int n=nums.size();
+        vector<int> v(n,1e9);
+        v[n-1]=0;
+        for(int i=n-2;i>=0;i--){
+            int mn=1e9;
+            for(int j=0;j<=nums[i];j++){
+                if(i+j<n) mn=min(mn,v[i+j]);
             }
-            far=farthest;
-            jmp++;
+            v[i]=1+mn;
         }
-        return jmp;
+        return v[0];
     }
 };
