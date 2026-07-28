@@ -1,25 +1,47 @@
+class MLL{
+public:
+    int val;
+    int mn;
+    MLL* next;
+    MLL* prev;
+    MLL(){
+        val=0;
+        mn=INT_MAX;
+        next==nullptr;
+        prev==nullptr;
+    }
+};
 class MinStack {
-    stack<pair<int,int>> st;
+    MLL* root;
+    MLL* t;
 public:
     MinStack() {
-        
+        root=new MLL();
+        t=root;
     }
     
     void push(int value) {
-        if(st.empty()) st.push({value,value});
-        else st.push({value,min(value,st.top().second)});
+        MLL* ptr=new MLL();
+        ptr->val=value;
+        ptr->mn=min(value,t->mn);
+        ptr->prev=t;
+        t->next=ptr;
+        t=ptr;
     }
     
     void pop() {
-        st.pop();
+        MLL* ptr=t;
+        t=t->prev;
+        t->next=nullptr;
+        delete ptr;
     }
     
     int top() {
-        return st.top().first;
+        return t->val;
     }
     
     int getMin() {
-        return st.top().second;
+        return t->mn;
     }
 };
 
