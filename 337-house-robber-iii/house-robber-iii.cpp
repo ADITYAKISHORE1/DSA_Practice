@@ -6,23 +6,26 @@
  *     TreeNode *right;
  *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
  *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left),
+ * right(right) {}
  * };
  */
 class Solution {
-    unordered_map<TreeNode*,unordered_map<bool,int>> dp;
-    int f(TreeNode* root,bool t){
-        if(root==nullptr) return 0;
-        if(dp.contains(root) and dp[root].contains(t)) return dp[root][t];
-        int take=0;
-        if(t){
-            take=root->val+f(root->left,false)+f(root->right,false);
-        }
-        int notTake=f(root->left,true)+f(root->right,true);
-        return dp[root][t]=max(take,notTake);
-    }
+    unordered_map<TreeNode*, int> dp;
+
 public:
     int rob(TreeNode* root) {
-        return f(root,true);
+        if (root == nullptr)
+            return 0;
+        if (dp.contains(root))
+            return dp[root];
+        int take = root->val;
+        if (root->left != nullptr)
+            take += rob(root->left->left) + rob(root->left->right);
+        if (root->right != nullptr)
+            take += rob(root->right->left) + rob(root->right->right);
+
+        int notTake = rob(root->left) + rob(root->right);
+        return dp[root] = max(take, notTake);
     }
 };
