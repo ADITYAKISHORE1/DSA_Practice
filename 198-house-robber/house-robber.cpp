@@ -1,14 +1,19 @@
 class Solution {
+    vector<vector<int>> dp;
+    int f(int i,bool t,vector<int>&v){
+        if(i<0) return 0;
+        if(dp[i][t]!=-1) return dp[i][t];
+        int take=0;
+        if(t){
+            take=v[i]+f(i-1,false,v);
+        } 
+        int notTake=f(i-1,true,v);
+        return dp[i][t]=max(take,notTake);
+    }
 public:
     int rob(vector<int>& nums) {
         int n=nums.size();
-        if(n==1) return nums[0];
-        vector<int> dp(n,0);
-        dp[0]=nums[0];
-        dp[1]=max(nums[0],nums[1]);
-        for(int i=2;i<n;i++){
-            dp[i]=max(dp[i-1],nums[i]+dp[i-2]);
-        }
-        return dp[n-1];
+        dp.resize(n,vector<int>(2,-1));
+        return f(n-1,true,nums);
     }
 };
