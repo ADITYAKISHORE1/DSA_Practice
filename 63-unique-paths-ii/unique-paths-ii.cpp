@@ -1,25 +1,33 @@
 class Solution {
 public:
     int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
-        int m=obstacleGrid.size();
-        int n=obstacleGrid[0].size();
-        vector<vector<long long>> dp(m,vector<long long>(n,0));
-        dp[m-1][n-1]=1;
-        for(int i=m-1;i>=0;i--){
-            for(int j=n-1;j>=0;j--){
-                if(obstacleGrid[i][j]==1){
-                    dp[i][j]=-1;
+        int m = obstacleGrid.size();
+        int n = obstacleGrid[0].size();
+        if (obstacleGrid[m - 1][n - 1] == 1)
+            return 0;
+        vector<long long> cur(n, 0);
+        vector<long long> prev(n, 0);
+        cur[n - 1] = prev[n - 1] = 1;
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                if (obstacleGrid[i][j] == 1) {
+                    cur[j] = 0;
                     continue;
                 }
-                if(i==m-1 and j==n-1) continue;
-                if(i<m-1){
-                    dp[i][j]+=(dp[i+1][j]==-1)?0:dp[i+1][j];
+                if (i == m - 1 and j == n - 1) {
+                    cur[j] = 1;
+                    continue;
                 }
-                if(j<n-1){
-                    dp[i][j]+=(dp[i][j+1]==-1)?0:dp[i][j+1];
+                cur[j] = 0;
+                if (i < m - 1) {
+                    cur[j] += prev[j];
+                }
+                if (j < n - 1) {
+                    cur[j] += cur[j + 1];
                 }
             }
+            prev = cur;
         }
-        return (dp[0][0]==-1)?0:dp[0][0];
+        return prev[0];
     }
 };
