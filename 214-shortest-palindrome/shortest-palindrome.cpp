@@ -5,10 +5,11 @@ public:
         string rev=s;
         reverse(rev.begin(),rev.end());
         string t=s+"$"+rev;
-        vector<int> lps(2*n+1,0);
+        int m=t.size();
+        vector<int> lps(m,0);
         int len=0;
         int i=1;
-        while(i<2*n+1){
+        while(i<m){
             if(t[i]==t[len]){
                 lps[i++]=++len;
             }else{
@@ -17,7 +18,7 @@ public:
                 }else i++;
             }
         }
-        int l=lps[t.size()-1];
+        int l=lps[m-1];
         string rem=rev.substr(0,n-l);
         return rem+s;
     }
