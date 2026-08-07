@@ -3,13 +3,15 @@ public:
     int shortestPathAllKeys(vector<string>& grid) {
         int m = grid.size();
         int n = grid[0].size();
-
+        int st_x,st_y;
         queue<vector<int>> q; // {x,y,steps,curr_key_state}
 
         int cnt_key = 0;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (grid[i][j] == '@') {
+                    st_x=i;
+                    st_y=j;
                     q.push({i, j, 0, 0});
 
                 } else {
@@ -24,7 +26,7 @@ public:
         vector<vector<vector<int>>> vis(
             m, vector<vector<int>>(n, vector<int>(target_key_state + 1, 0)));
 
-        vis[q.front()[0]][q.front()[1]][q.front()[3]] = 1;
+        vis[st_x][st_y][0] = 1;
 
         vector<int> dx = {0, 0, 1, -1};
         vector<int> dy = {1, -1, 0, 0};
