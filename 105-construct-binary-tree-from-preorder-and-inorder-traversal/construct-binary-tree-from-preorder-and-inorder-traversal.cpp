@@ -10,21 +10,25 @@
  * };
  */
 class Solution {
-    unordered_map<int,int> mpp;
-    TreeNode* f(int & idx,int start,int end,vector<int>&preorder,vector<int>& inorder){
-        if(start>end) return nullptr;
-        int i=mpp[preorder[idx]];
-        TreeNode* root=new TreeNode(preorder[idx]);
-        idx++;
-        root->left=f(idx,start,i-1,preorder,inorder);
-        root->right=f(idx,i+1,end,preorder,inorder);
+    int n;
+    TreeNode* construct(int i,int l,int r,vector<int>&preorder,vector<int>&inorder){
+        if(i>=n or l>r) return nullptr;
+        int mid;
+        for(int j=l;j<=r;j++){
+            if(preorder[i]==inorder[j]){
+                mid=j;
+                break;
+            }
+        }  
+        TreeNode* root=new TreeNode(preorder[i]);
+        root->left=construct(i+1,l,mid-1,preorder,inorder);
+        root->right=construct(i+(mid-l)+1,mid+1,r,preorder,inorder);
         return root;
+
     }
 public:
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        int n=preorder.size();
-        for(int i=0;i<n;i++) mpp[inorder[i]]=i;
-        int idx=0;
-        return f(idx,0,n-1,preorder,inorder);
+        n=preorder.size();
+        return construct(0,0,n-1,preorder,inorder);
     }
 };
