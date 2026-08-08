@@ -10,17 +10,41 @@
  * };
  */
 class Solution {
-    bool f(TreeNode* l,TreeNode* r){
-        if(l==nullptr and r==nullptr) return true;
-        if(l==nullptr or r==nullptr) return false;
-        if(l->val==r->val){
-            return (f(l->right,r->left)&f(l->left,r->right));
+    bool chkPali(vector<int>&v){
+        int l=0,r=v.size()-1;
+        while(l<=r){
+            if(v[l]!=v[r]) return false;
+            l++;
+            r--;
         }
-        return false;
+        return true;
     }
 public:
     bool isSymmetric(TreeNode* root) {
         if(root==nullptr) return true;
-        return f(root->left,root->right);
+        queue<TreeNode*> q;
+        q.push(root);
+        TreeNode* temp=new TreeNode(-101);
+        while(!q.empty()){
+            int sz=q.size();
+            vector<int> arr;
+            while(sz--){
+                TreeNode* node=q.front();
+                q.pop();
+                int v=node->val;
+                arr.push_back(v);
+                if(v==-101 and node->left==nullptr and node->right==nullptr) continue;
+                if(node->left!=nullptr){
+                    q.push(node->left);
+                }else q.push(temp);
+                if(node->right!=nullptr){
+                    q.push(node->right);
+                }else q.push(temp);
+            }
+            if(!chkPali(arr)){
+                return false;
+            }
+        }
+        return true;
     }
 };
