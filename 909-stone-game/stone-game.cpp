@@ -3,8 +3,8 @@ class Solution {
     int f(int l,int r,vector<int>&v){
         if(l>r) return 0;
         if(dp[l][r]!=-1) return dp[l][r];
-        int takel=v[l]+min(f(l+2,r,v),f(l+1,r-1,v));
-        int taker=v[r]+min(f(l+1,r-1,v),f(l,r-2,v));
+        int takel=v[l]-f(l+1,r,v);
+        int taker=v[r]-f(l,r-1,v);
         return dp[l][r]=max(takel,taker);
     }
 public:
