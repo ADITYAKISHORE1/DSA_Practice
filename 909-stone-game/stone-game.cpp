@@ -1,0 +1,16 @@
+class Solution {
+    vector<vector<int>> dp;
+    int f(int l,int r,vector<int>&v){
+        if(l>r) return 0;
+        if(dp[l][r]!=-1) return dp[l][r];
+        int takel=v[l]+min(f(l+2,r,v),f(l+1,r-1,v));
+        int taker=v[r]+min(f(l+1,r-1,v),f(l,r-2,v));
+        return dp[l][r]=max(takel,taker);
+    }
+public:
+    bool stoneGame(vector<int>& piles) {
+        int n=piles.size();
+        dp.resize(n,vector<int>(n,-1));
+        return f(0,n-1,piles);
+    }
+};
