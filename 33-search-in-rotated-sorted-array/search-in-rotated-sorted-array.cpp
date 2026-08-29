@@ -5,9 +5,9 @@ public:
         int l=0,r=n-1;
         while(l<=r){
             int mid=l+(r-l)/2;
-            if(target==nums[mid]) return mid;
+            if(nums[mid]==target) return mid;
             else if(nums[mid]<nums[r]){
-                if(target>nums[mid] and target<=nums[r]){
+                if(nums[mid]<target and target<=nums[r]){
                     l=mid+1;
                 }else r=mid-1;
             }else{
