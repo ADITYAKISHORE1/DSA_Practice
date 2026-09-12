@@ -17,18 +17,25 @@ public:
 */
 
 class Solution {
-    void dfs(Node* root,Node* nxt){
-        if(root==nullptr) return;
-        root->next=nxt;
-        dfs(root->left,root->right);
-        if(nxt!=nullptr){
-            dfs(root->right,nxt->left);
-            dfs(nxt->left,nxt->right);
-        }
-    }
 public:
     Node* connect(Node* root) {
-        dfs(root,nullptr);
+        Node* head=root;
+        while(head!=nullptr){
+            Node* dummy=new Node(0);
+            Node* temp=dummy;
+            while(head!=nullptr){
+                if(head->left!=nullptr){
+                    temp->next=head->left;
+                    temp=temp->next;
+                }
+                if(head->right!=nullptr){
+                    temp->next=head->right;
+                    temp=temp->next;
+                }
+                head=head->next;
+            }
+            head=dummy->next;
+        }
         return root;
     }
 };
