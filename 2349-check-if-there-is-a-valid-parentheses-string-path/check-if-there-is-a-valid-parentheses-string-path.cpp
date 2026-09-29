@@ -1,39 +1,33 @@
 class Solution {
-    int m, n;
-    vector<vector<vector<int>>> dp;
-    bool f(int i, int j, int c, vector<vector<char>>& v) {
-        if (i == m or j == n)
-            return false;
-
-        if (v[i][j] == '(')
-            c++;
-        else
-            c--;
-
-        if (c < 0)
-            return false;
-
-        if (i == m - 1 and j == n - 1)
-            return (c == 0);
-
-        if (dp[i][j][c] != -1)
-            return dp[i][j][c];
-
-        bool right = f(i + 1, j, c, v);
-        bool down = f(i, j + 1, c, v);
-
-        return dp[i][j][c] = right | down;
-    }
-
 public:
     bool hasValidPath(vector<vector<char>>& grid) {
-        m = grid.size();
-        n = grid[0].size();
+        int m = grid.size();
+        int n = grid[0].size();
+        int dp[101][101][202];
+        memset(dp, 0, sizeof(dp));
 
-        if (grid[0][0] == ')' or grid[m - 1][n - 1] == '(')
-            return false;
-
-        dp.resize(m, vector<vector<int>>(n, vector<int>(m + n + 1, -1)));
-        return f(0, 0, 0, grid);
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                for (int c = 0; c <= m + n; c++) {
+                    int cnt = c;
+                    if (grid[i][j] == '(') {
+                        cnt++;
+                    } else {
+                        cnt--;
+                    }
+                    if (cnt < 0)
+                        continue;
+                    if (i == m - 1 and j == n - 1) {
+                        dp[i][j][c] = (cnt == 0);
+                        continue;
+                    }
+                    if (i + 1 < m)
+                        dp[i][j][c] |= dp[i + 1][j][cnt];
+                    if (j + 1 < n)
+                        dp[i][j][c] |= dp[i][j + 1][cnt];
+                }
+            }
+        }
+        return dp[0][0][0];
     }
 };
